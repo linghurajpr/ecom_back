@@ -1,20 +1,25 @@
 from django.db import models
 
 class Product(models.Model):
-    name=models.CharField(max_length=200)
-    category=models.CharField(max_length=56)
-    price=models.DecimalField(max_digits=10,decimal_places=2)
-    instock=models.BooleanField(default=True)
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    price = models.FloatField()
+    category = models.CharField(max_length=100)
+    in_stock = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
 
 class Cart(models.Model):
-    create=models.DateTimeField(auto_now_add=True)
-    def __str__(self):
-        return f"Cart{self.id}-Created on {self.create}"
-    
-class CartItems(models.Model):
-    cart=models.ForeignKey(Cart,related_name='items',on_delete=models.CASCADE)
-    prod=models.ForeignKey(Product,on_delete=models.CASCADE)
-    quantity=models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.quantity}x{self.prod.name}"
+        return f"Cart {self.id}"
+
+class CartItems(models.Model):
+    cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.product.name} x {self.quantity}"
